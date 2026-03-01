@@ -63,11 +63,17 @@ struct KeyTimeSelectionView: View {
     private var dotsTrack: some View {
         GeometryReader { proxy in
             let width = proxy.size.width
+            let rangeLength = store.selectionRange.upperBound - store.selectionRange.lowerBound
 
             ZStack(alignment: .leading) {
                 Capsule()
                     .fill(Color.gray.opacity(0.3))
                     .frame(height: 10)
+
+                Capsule()
+                    .fill(Color.yellow)
+                    .frame(width: width * min(rangeLength, 1.0 - currentPct), height: 10)
+                    .offset(x: width * currentPct)
 
                 ForEach(store.keyTimes) { point in
                     Circle()

@@ -37,7 +37,7 @@ struct TrimmerFeature {
                     KeyTimePoint(id: UUID(), percentage: 0.8),
                     KeyTimePoint(id: UUID(), percentage: 0.9)
                 ],
-                selectionRange: 0.2...0.8,
+                selectionRange: 0.2...0.4,
                 currentTime: 0.0,
                 isPlaying: false
             )
