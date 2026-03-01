@@ -42,7 +42,7 @@ struct KeyTimeSelectionView: View {
                 Text("KeyTime Selection")
                     .font(.headline)
 
-                Text("Selected: \(pct(store.selectionRange.lowerBound)) → \(pct(store.selectionRange.upperBound))")
+                Text("Selection: \(pct(store.selectionRange.lowerBound)) → \(pct(store.selectionRange.upperBound))")
                     .font(.body)
                     .foregroundStyle(.secondary)
 
@@ -72,8 +72,8 @@ struct KeyTimeSelectionView: View {
 
                 Capsule()
                     .fill(Color.yellow)
-                    .frame(width: width * min(rangeLength, 1.0 - currentPct), height: 10)
-                    .offset(x: width * currentPct)
+                    .frame(width: width * rangeLength, height: 10)
+                    .offset(x: width * store.selectionRange.lowerBound)
 
                 ForEach(store.keyTimes) { point in
                     Circle()

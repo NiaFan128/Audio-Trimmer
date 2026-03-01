@@ -23,9 +23,25 @@ struct TrimmerFeature {
         var totalLength: TimeInterval
         var keyTimes: IdentifiedArrayOf<KeyTimePoint>
         var selectionRange: ClosedRange<Double>
+        let initialSelectionRange: ClosedRange<Double>
         var currentTime: TimeInterval
         var isPlaying: Bool
-        
+
+        init(
+            totalLength: TimeInterval,
+            keyTimes: IdentifiedArrayOf<KeyTimePoint>,
+            selectionRange: ClosedRange<Double>,
+            currentTime: TimeInterval,
+            isPlaying: Bool
+        ) {
+            self.totalLength = totalLength
+            self.keyTimes = keyTimes
+            self.selectionRange = selectionRange
+            self.initialSelectionRange = selectionRange
+            self.currentTime = currentTime
+            self.isPlaying = isPlaying
+        }
+
         static var mock: State {
             State(
                 totalLength: 150.0,
@@ -78,10 +94,14 @@ struct TrimmerFeature {
 
             case .resetTapped:
                 state.isPlaying = false
-                state.currentTime = state.selectionRange.lowerBound * state.totalLength
+                state.selectionRange = state.initialSelectionRange
+                state.currentTime = state.initialSelectionRange.lowerBound * state.totalLength
                 return .cancel(id: CancelID.timer)
 
             case let .keyTimeTapped(percentage):
+                let rangeLength = state.initialSelectionRange.upperBound - state.initialSelectionRange.lowerBound
+                let newUpper = min(percentage + rangeLength, 1.0)
+                state.selectionRange = percentage...newUpper
                 state.currentTime = percentage * state.totalLength
                 return .none
 
