@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		94577B5B2F54318300687B58 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 94577B5A2F54318300687B58 /* ComposableArchitecture */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		940A6B122F53437E0036217A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94577B5B2F54318300687B58 /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 				940A6B062F53437D0036217A /* ios-audio-trimmer */,
 				940A6B142F53437E0036217A /* ios-audio-trimmerTests */,
 				940A6B1E2F53437E0036217A /* ios-audio-trimmerUITests */,
+				94577B592F54318300687B58 /* Frameworks */,
 				940A6B052F53437D0036217A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +96,13 @@
 				940A6B1B2F53437E0036217A /* ios-audio-trimmerUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		94577B592F54318300687B58 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,6 +125,7 @@
 			);
 			name = "ios-audio-trimmer";
 			packageProductDependencies = (
+				94577B5A2F54318300687B58 /* ComposableArchitecture */,
 			);
 			productName = "ios-audio-trimmer";
 			productReference = 940A6B042F53437D0036217A /* ios-audio-trimmer.app */;
@@ -417,7 +431,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
@@ -449,7 +462,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
@@ -592,6 +604,14 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		94577B5A2F54318300687B58 /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 940A6B342F54265A0036217A /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 940A6AFC2F53437D0036217A /* Project object */;
 }
