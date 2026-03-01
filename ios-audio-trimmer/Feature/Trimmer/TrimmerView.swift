@@ -32,12 +32,36 @@ struct TrimmerView: View {
 struct KeyTimeSelectionView: View {
     let store: StoreOf<TrimmerFeature>
 
+    private var currentPct: Double {
+        store.totalLength > 0 ? store.currentTime / store.totalLength : 0
+    }
+
     var body: some View {
-        RoundedRectangle(cornerRadius: 12)
-            .fill(Color.gray.opacity(0.2))
-            .frame(height: 120)
-            .overlay { Text("KeyTime Selection").foregroundStyle(.secondary) }
-            .padding(.horizontal)
+        VStack {
+            VStack(spacing: 8) {
+                Text("KeyTime Selection")
+                    .font(.headline)
+
+                Text("Selection: \(pct(store.selectionRange.lowerBound)) → \(pct(store.selectionRange.upperBound))")
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+
+                Text("Current: \(pct(currentPct))")
+                    .font(.system(.body))
+                    .fontWeight(.bold)
+                    .foregroundStyle(.green)
+            }
+
+            RoundedRectangle(cornerRadius: 12)
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(height: 120)
+                        .overlay { Text("KeyTime Selection").foregroundStyle(.secondary) }
+                        .padding(.horizontal)
+        }
+    }
+
+    private func pct(_ value: Double) -> String {
+        String(format: "%.1f%%", value * 100)
     }
 }
 
@@ -50,9 +74,7 @@ struct MusicTimelineView: View {
         VStack {
             VStack(spacing: 8) {
                 Text("Music Timeline")
-                    .font(.system(.body))
-                    .fontWeight(.bold)
-                    .foregroundStyle(.secondary)
+                    .font(.headline)
                 
                 Text("Selected: \(formattedTime(store.selectionRange.lowerBound * store.totalLength)) → \(formattedTime(store.selectionRange.upperBound * store.totalLength))")
                     .font(.body)
