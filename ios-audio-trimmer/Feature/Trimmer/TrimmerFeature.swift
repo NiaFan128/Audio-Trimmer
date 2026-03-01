@@ -46,6 +46,7 @@ struct TrimmerFeature {
     enum Action {
         case onAppear
         case playButtonTapped
+        case resetTapped
         case timerTick
     }
 
@@ -72,6 +73,11 @@ struct TrimmerFeature {
                 } else {
                     return .cancel(id: CancelID.timer)
                 }
+
+            case .resetTapped:
+                state.isPlaying = false
+                state.currentTime = state.selectionRange.lowerBound * state.totalLength
+                return .cancel(id: CancelID.timer)
 
             case .timerTick:
                 let startTime = state.selectionRange.lowerBound * state.totalLength
