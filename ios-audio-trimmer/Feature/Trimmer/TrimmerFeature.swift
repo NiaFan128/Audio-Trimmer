@@ -43,12 +43,43 @@ struct TrimmerFeature {
         }
     }
     
-    enum Action: Equatable, Sendable { case onAppear }
-    
+    enum Action {
+        case onAppear
+        case playButtonTapped
+        case timerTick
+    }
+
+    private enum CancelID { case timer }
+
+    @Dependency(\.continuousClock) var clock
+
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .onAppear:
+                return .none
+
+            case .playButtonTapped:
+                state.isPlaying.toggle()
+                if state.isPlaying {
+                    return .run { send in
+                        while true {
+                            try await clock.sleep(for: .seconds(0.1))
+                            await send(.timerTick)
+                        }
+                    }
+                    .cancellable(id: CancelID.timer, cancelInFlight: true)
+                } else {
+                    return .cancel(id: CancelID.timer)
+                }
+
+            case .timerTick:
+                let startTime = state.selectionRange.lowerBound * state.totalLength
+                let endTime = state.selectionRange.upperBound * state.totalLength
+                state.currentTime += 0.1
+                if state.currentTime >= endTime {
+                    state.currentTime = startTime
+                }
                 return .none
             }
         }
