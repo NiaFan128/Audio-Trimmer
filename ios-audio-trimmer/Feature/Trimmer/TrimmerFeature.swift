@@ -30,11 +30,12 @@ struct TrimmerFeature {
             State(
                 totalLength: 150.0,
                 keyTimes: [
-                    KeyTimePoint(id: UUID(), percentage: 0.0),
+                    KeyTimePoint(id: UUID(), percentage: 0.1),
                     KeyTimePoint(id: UUID(), percentage: 0.25),
-                    KeyTimePoint(id: UUID(), percentage: 0.5),
-                    KeyTimePoint(id: UUID(), percentage: 0.75),
-                    KeyTimePoint(id: UUID(), percentage: 1.0)
+                    KeyTimePoint(id: UUID(), percentage: 0.4),
+                    KeyTimePoint(id: UUID(), percentage: 0.65),
+                    KeyTimePoint(id: UUID(), percentage: 0.8),
+                    KeyTimePoint(id: UUID(), percentage: 0.9)
                 ],
                 selectionRange: 0.2...0.8,
                 currentTime: 0.0,

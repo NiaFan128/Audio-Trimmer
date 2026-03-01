@@ -17,10 +17,10 @@ struct TrimmerView: View {
         VStack(spacing: 12) {
             KeyTimeSelectionView(store: store)
             MusicTimelineView(store: store)
-            Spacer()
             PlaybackControlBar(store: store)
         }
         .padding(.vertical)
+        .background(Color.gray.opacity(0.1))
         .frame(maxWidth: 640)
         .frame(maxWidth: .infinity)
         .onAppear { store.send(.onAppear) }
@@ -42,7 +42,7 @@ struct KeyTimeSelectionView: View {
                 Text("KeyTime Selection")
                     .font(.headline)
 
-                Text("Selection: \(pct(store.selectionRange.lowerBound)) → \(pct(store.selectionRange.upperBound))")
+                Text("Selected: \(pct(store.selectionRange.lowerBound)) → \(pct(store.selectionRange.upperBound))")
                     .font(.body)
                     .foregroundStyle(.secondary)
 
@@ -52,12 +52,35 @@ struct KeyTimeSelectionView: View {
                     .foregroundStyle(.green)
             }
 
-            RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.gray.opacity(0.2))
-                        .frame(height: 120)
-                        .overlay { Text("KeyTime Selection").foregroundStyle(.secondary) }
-                        .padding(.horizontal)
+            dotsTrack
+                .padding(.vertical)
+                .background(Color.gray.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .padding(.horizontal)
         }
+    }
+
+    private var dotsTrack: some View {
+        GeometryReader { proxy in
+            let width = proxy.size.width
+
+            ZStack(alignment: .leading) {
+                Capsule()
+                    .fill(Color.gray.opacity(0.3))
+                    .frame(height: 10)
+
+                ForEach(store.keyTimes) { point in
+                    Circle()
+                        .fill(Color.pink)
+                        .frame(width: 18, height: 18)
+                        .offset(x: width * point.percentage - 9)
+                        .onTapGesture { store.send(.keyTimeTapped(point.percentage)) }
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .frame(height: 28)
+        .padding(.horizontal)
     }
 
     private func pct(_ value: Double) -> String {
