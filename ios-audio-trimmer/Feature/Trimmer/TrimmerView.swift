@@ -115,10 +115,7 @@ struct MusicTimelineView: View {
                     .foregroundStyle(.green)
             }
 
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color.gray.opacity(0.2))
-                .frame(height: 160)
-                .overlay { Text("Music Timeline").foregroundStyle(.secondary) }
+            TrimmerTimelineView(store: store)
                 .padding(.horizontal)
         }
     }
@@ -127,6 +124,45 @@ struct MusicTimelineView: View {
         let m = Int(seconds) / 60
         let s = Int(seconds) % 60
         return String(format: "%d:%02d", m, s)
+    }
+}
+
+// MARK: - TrimmerTimelineView
+
+struct TrimmerTimelineView: View {
+    let store: StoreOf<TrimmerFeature>
+
+    private var currentPct: Double {
+        store.totalLength > 0 ? store.currentTime / store.totalLength : 0
+    }
+
+    var body: some View {
+        GeometryReader { proxy in
+            let width = proxy.size.width
+            let selectionStart = store.selectionRange.lowerBound * width
+            let selectionWidth = (store.selectionRange.upperBound - store.selectionRange.lowerBound) * width
+
+            ZStack(alignment: .leading) {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.gray.opacity(0.25))
+
+                let progressWidth = max(0, (currentPct - store.selectionRange.lowerBound) * width)
+                Rectangle()
+                    .fill(Color.green.opacity(0.6))
+                    .frame(width: progressWidth)
+                    .offset(x: selectionStart)
+
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(Color.white.opacity(0.08))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 6)
+                            .strokeBorder(Color.white.opacity(0.5), lineWidth: 1.5)
+                    }
+                    .frame(width: selectionWidth)
+                    .offset(x: selectionStart)
+            }
+        }
+        .frame(height: 80)
     }
 }
 

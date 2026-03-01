@@ -66,6 +66,7 @@ struct TrimmerFeature {
         case resetTapped
         case timerTick
         case keyTimeTapped(Double)
+        case playheadDragged(Double)
     }
 
     private enum CancelID { case timer }
@@ -102,6 +103,10 @@ struct TrimmerFeature {
                 let rangeLength = state.initialSelectionRange.upperBound - state.initialSelectionRange.lowerBound
                 let newUpper = min(percentage + rangeLength, 1.0)
                 state.selectionRange = percentage...newUpper
+                state.currentTime = percentage * state.totalLength
+                return .none
+
+            case let .playheadDragged(percentage):
                 state.currentTime = percentage * state.totalLength
                 return .none
 
