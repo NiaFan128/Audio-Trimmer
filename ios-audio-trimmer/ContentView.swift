@@ -5,14 +5,16 @@
 //  Created by Nia Fan on 2026/2/28.
 //
 
+import ComposableArchitecture
 import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-
-        }
-        .padding()
+        TrimmerView(
+            store: Store(initialState: .mock) {
+                TrimmerFeature()
+            }
+        )
     }
 }
 

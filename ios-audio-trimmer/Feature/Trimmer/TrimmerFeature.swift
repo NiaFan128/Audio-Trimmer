@@ -67,6 +67,7 @@ struct TrimmerFeature {
         case timerTick
         case keyTimeTapped(Double)
         case playheadDragged(Double)
+        case selectionWindowMoved(to: Double)
     }
 
     private enum CancelID { case timer }
@@ -108,6 +109,12 @@ struct TrimmerFeature {
 
             case let .playheadDragged(percentage):
                 state.currentTime = percentage * state.totalLength
+                return .none
+
+            case let .selectionWindowMoved(to: newLower):
+                let rangeWidth = state.selectionRange.upperBound - state.selectionRange.lowerBound
+                let clampedLower = min(1.0 - rangeWidth, max(0.0, newLower))
+                state.selectionRange = clampedLower...(clampedLower + rangeWidth)
                 return .none
 
             case .timerTick:

@@ -132,6 +132,8 @@ struct MusicTimelineView: View {
 struct TrimmerTimelineView: View {
     let store: StoreOf<TrimmerFeature>
 
+    @GestureState private var dragStartLowerBound: Double? = nil
+
     private var currentPct: Double {
         store.totalLength > 0 ? store.currentTime / store.totalLength : 0
     }
@@ -160,6 +162,19 @@ struct TrimmerTimelineView: View {
                     }
                     .frame(width: selectionWidth)
                     .offset(x: selectionStart)
+                    .gesture(
+                        DragGesture(minimumDistance: 0)
+                            .updating($dragStartLowerBound) { _, state, _ in
+                                if state == nil {
+                                    state = store.selectionRange.lowerBound
+                                }
+                            }
+                            .onChanged { value in
+                                guard let start = dragStartLowerBound else { return }
+                                let delta = value.translation.width / width
+                                store.send(.selectionWindowMoved(to: start + delta))
+                            }
+                    )
             }
         }
         .frame(height: 80)
