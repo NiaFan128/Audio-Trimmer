@@ -31,15 +31,14 @@ struct TrimmerFeature {
             totalLength: TimeInterval,
             keyTimes: IdentifiedArrayOf<KeyTimePoint>,
             selectionRange: ClosedRange<Double>,
-            currentTime: TimeInterval,
-            isPlaying: Bool
+            isPlaying: Bool = false
         ) {
             self.totalLength = totalLength
             self.keyTimes = keyTimes
             self.selectionRange = selectionRange
             self.initialSelectionRange = selectionRange
-            self.currentTime = currentTime
             self.isPlaying = isPlaying
+            self.currentTime = selectionRange.lowerBound * totalLength
         }
 
         static var mock: State {
@@ -53,9 +52,7 @@ struct TrimmerFeature {
                     KeyTimePoint(id: UUID(), percentage: 0.8),
                     KeyTimePoint(id: UUID(), percentage: 0.9)
                 ],
-                selectionRange: 0.2...0.4,
-                currentTime: 0.0,
-                isPlaying: false
+                selectionRange: 0.2...0.4
             )
         }
     }
@@ -103,8 +100,9 @@ struct TrimmerFeature {
             case let .keyTimeTapped(percentage):
                 let rangeLength = state.initialSelectionRange.upperBound - state.initialSelectionRange.lowerBound
                 let newUpper = min(percentage + rangeLength, 1.0)
+                let shift = percentage - state.selectionRange.lowerBound
                 state.selectionRange = percentage...newUpper
-                state.currentTime = percentage * state.totalLength
+                state.currentTime += shift * state.totalLength
                 return .none
 
             case let .playheadDragged(percentage):
@@ -114,7 +112,9 @@ struct TrimmerFeature {
             case let .selectionWindowMoved(to: newLower):
                 let rangeWidth = state.selectionRange.upperBound - state.selectionRange.lowerBound
                 let clampedLower = min(1.0 - rangeWidth, max(0.0, newLower))
+                let shift = clampedLower - state.selectionRange.lowerBound
                 state.selectionRange = clampedLower...(clampedLower + rangeWidth)
+                state.currentTime += shift * state.totalLength
                 return .none
 
             case .timerTick:
