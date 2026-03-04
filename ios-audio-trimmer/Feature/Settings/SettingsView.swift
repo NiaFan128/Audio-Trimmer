@@ -49,9 +49,6 @@ private extension SettingsView {
                 }
         } header: {
             Text("Track Length")
-        } footer: {
-            Text("Type 4 digits — colon is added automatically (e.g. 0230 → 02:30)")
-                .font(.caption)
         }
     }
 
@@ -64,20 +61,16 @@ private extension SettingsView {
     }
 
     var keyTimesSection: some View {
-        Section {
+        Section("Key Times") {
             ForEach(store.keyTimes) { point in
-                KeyTimeRow(point: point)
+                KeyTimeRow(point: point, totalLengthText: store.totalLengthText)
             }
-        } header: {
-            HStack {
-                Text("Key Times")
-                Spacer()
-                Button {
-                    store.send(.addKeyTimePointTapped)
-                } label: {
-                    Image(systemName: "plus")
-                        .fontWeight(.semibold)
-                }
+            .onDelete { store.send(.deleteKeyTime($0)) }
+
+            Button {
+                store.send(.addKeyTimePointTapped)
+            } label: {
+                Label("Add Key Time", systemImage: "plus")
             }
         }
     }
@@ -87,7 +80,7 @@ private extension SettingsView {
             Button {
                 store.send(.editAudioTapped)
             } label: {
-                Text("Edit Audio")
+                Text("Start Trimming")
                     .frame(maxWidth: .infinity)
                     .fontWeight(.semibold)
             }
@@ -99,14 +92,30 @@ private extension SettingsView {
 
 private struct KeyTimeRow: View {
     let point: KeyTimePoint
+    let totalLengthText: String
+
+    private var timeString: String {
+        let parts = totalLengthText.split(separator: ":")
+        guard parts.count == 2,
+              let mm = Double(parts[0]),
+              let ss = Double(parts[1])
+        else { return "--:--" }
+        let total = mm * 60 + ss
+        let t = point.percentage * total
+        return String(format: "%02d:%02d", Int(t) / 60, Int(t) % 60)
+    }
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack {
             Circle()
                 .fill(Color.pink)
                 .frame(width: 8, height: 8)
-            Text(String(format: "%.1f%%", point.percentage * 100))
+            Text(String(format: "%.0f%%", point.percentage * 100))
                 .monospacedDigit()
+            Spacer()
+            Text(timeString)
+                .monospacedDigit()
+                .foregroundStyle(.secondary)
         }
     }
 }

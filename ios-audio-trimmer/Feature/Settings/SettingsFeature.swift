@@ -26,6 +26,7 @@ struct SettingsFeature {
     enum Action: BindableAction {
         case binding(BindingAction<State>)
         case addKeyTimePointTapped
+        case deleteKeyTime(IndexSet)
         case editAudioTapped
     }
 
@@ -35,8 +36,20 @@ struct SettingsFeature {
             switch action {
             case .binding:
                 return .none
+
             case .addKeyTimePointTapped:
+                let lastPct = state.keyTimes.map(\.percentage).max() ?? 0.0
+                guard lastPct < 1.0 else { return .none }
+                let newPct = min(lastPct + 0.10, 1.0)
+                state.keyTimes.append(KeyTimePoint(id: UUID(), percentage: newPct))
                 return .none
+
+            case let .deleteKeyTime(indices):
+                for index in indices.reversed() {
+                    state.keyTimes.remove(at: index)
+                }
+                return .none
+
             case .editAudioTapped:
                 return .none
             }
