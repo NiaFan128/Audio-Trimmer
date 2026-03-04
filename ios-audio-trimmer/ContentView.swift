@@ -10,9 +10,9 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        TrimmerView(
-            store: Store(initialState: .mock) {
-                TrimmerFeature()
+        SettingsView(
+            store: Store(initialState: SettingsFeature.State()) {
+                SettingsFeature()
             }
         )
     }
