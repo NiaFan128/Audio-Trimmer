@@ -136,6 +136,10 @@ struct TrimmerTimelineView: View {
 
     private let selectionWindowRatio: CGFloat = 0.6
 
+    private var currentPct: Double {
+        store.totalLength > 0 ? store.currentTime / store.totalLength : 0
+    }
+
     var body: some View {
         GeometryReader { proxy in
             let w = proxy.size.width
@@ -189,8 +193,14 @@ struct TrimmerTimelineView: View {
                 .position(x: waveformOffset + contentWidth / 2, y: h / 2)
 
                 // Selection window — ZStack centers this at (w/2, h/2) ✓
+                let progressFraction = CGFloat(min(1.0, max(0, (currentPct - store.selectionRange.lowerBound) / Double(rangeWidth))))
                 RoundedRectangle(cornerRadius: 6)
                     .fill(Color.white.opacity(0.08))
+                    .overlay(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(Color.green.opacity(0.5))
+                            .frame(width: progressFraction * w * selectionWindowRatio)
+                    }
                     .overlay {
                         RoundedRectangle(cornerRadius: 6)
                             .strokeBorder(
