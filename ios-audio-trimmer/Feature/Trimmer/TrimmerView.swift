@@ -151,18 +151,39 @@ struct TrimmerTimelineView: View {
 
                 // Waveform — uses .position() so ZStack frame is not affected by contentWidth
                 Canvas { context, size in
-                    guard let symbol = context.resolveSymbol(id: 0) else { return }
+                    guard let dimSymbol = context.resolveSymbol(id: 0),
+                          let brightSymbol = context.resolveSymbol(id: 1) else { return }
+
                     let step: CGFloat = 26
+
+                    // Pass 1: dim symbols across full waveform width
                     var x: CGFloat = step / 2
                     while x < size.width {
-                        context.draw(symbol, at: CGPoint(x: x, y: size.height / 2))
+                        context.draw(dimSymbol, at: CGPoint(x: x, y: size.height / 2))
+                        x += step
+                    }
+
+                    // Pass 2: bright, clipped to selection area
+                    let selLeft = CGFloat(store.selectionRange.lowerBound) * size.width
+                    let selWidth = CGFloat(store.selectionRange.upperBound - store.selectionRange.lowerBound) * size.width
+                    var innerContext = context
+                    innerContext.clip(to: Path(CGRect(x: selLeft, y: 0, width: selWidth, height: size.height)))
+                    x = step / 2
+                    while x < size.width {
+                        innerContext.draw(brightSymbol, at: CGPoint(x: x, y: size.height / 2))
                         x += step
                     }
                 } symbols: {
+                    // Outside selection: dim
                     Image(systemName: "waveform")
                         .font(.system(size: 30))
-                        .foregroundStyle(.white.opacity(0.35))
+                        .foregroundStyle(.white.opacity(0.25))
                         .tag(0)
+                    // Inside selection: bright white
+                    Image(systemName: "waveform")
+                        .font(.system(size: 30))
+                        .foregroundStyle(.white)
+                        .tag(1)
                 }
                 .frame(width: contentWidth, height: h)
                 .position(x: waveformOffset + contentWidth / 2, y: h / 2)
