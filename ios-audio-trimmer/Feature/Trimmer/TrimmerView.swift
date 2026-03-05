@@ -134,48 +134,70 @@ struct TrimmerTimelineView: View {
 
     @GestureState private var dragStartLowerBound: Double? = nil
 
-    private var currentPct: Double {
-        store.totalLength > 0 ? store.currentTime / store.totalLength : 0
-    }
+    private let selectionWindowRatio: CGFloat = 0.6
 
     var body: some View {
         GeometryReader { proxy in
-            let width = proxy.size.width
-            let selectionStart = store.selectionRange.lowerBound * width
-            let selectionWidth = (store.selectionRange.upperBound - store.selectionRange.lowerBound) * width
+            let w = proxy.size.width
+            let h = proxy.size.height
+            let rangeWidth = CGFloat(store.selectionRange.upperBound - store.selectionRange.lowerBound)
+            // Reverse-calculate contentWidth so the selection = selectionWindowRatio of screen
+            let contentWidth = w * selectionWindowRatio / rangeWidth
+            let selectionCenter = CGFloat(store.selectionRange.lowerBound + store.selectionRange.upperBound) / 2
+            let waveformOffset = w / 2 - selectionCenter * contentWidth
 
-            ZStack(alignment: .leading) {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.gray.opacity(0.25))
+            ZStack {
+                Color.gray.opacity(0.2)
 
-                let progressWidth = max(0, (currentPct - store.selectionRange.lowerBound) * width)
-                Rectangle()
-                    .fill(Color.green.opacity(0.6))
-                    .frame(width: progressWidth)
-                    .offset(x: selectionStart)
+                // Waveform — uses .position() so ZStack frame is not affected by contentWidth
+                Canvas { context, size in
+                    guard let symbol = context.resolveSymbol(id: 0) else { return }
+                    let step: CGFloat = 26
+                    var x: CGFloat = step / 2
+                    while x < size.width {
+                        context.draw(symbol, at: CGPoint(x: x, y: size.height / 2))
+                        x += step
+                    }
+                } symbols: {
+                    Image(systemName: "waveform")
+                        .font(.system(size: 30))
+                        .foregroundStyle(.white.opacity(0.35))
+                        .tag(0)
+                }
+                .frame(width: contentWidth, height: h)
+                .position(x: waveformOffset + contentWidth / 2, y: h / 2)
 
+                // Selection window — ZStack centers this at (w/2, h/2) ✓
                 RoundedRectangle(cornerRadius: 6)
                     .fill(Color.white.opacity(0.08))
                     .overlay {
                         RoundedRectangle(cornerRadius: 6)
-                            .strokeBorder(Color.white.opacity(0.5), lineWidth: 1.5)
+                            .strokeBorder(
+                                LinearGradient(
+                                    colors: [.orange, .purple],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                ),
+                                lineWidth: 2
+                            )
                     }
-                    .frame(width: selectionWidth)
-                    .offset(x: selectionStart)
-                    .gesture(
-                        DragGesture(minimumDistance: 0)
-                            .updating($dragStartLowerBound) { _, state, _ in
-                                if state == nil {
-                                    state = store.selectionRange.lowerBound
-                                }
-                            }
-                            .onChanged { value in
-                                guard let start = dragStartLowerBound else { return }
-                                let delta = value.translation.width / width
-                                store.send(.selectionWindowMoved(to: start + delta))
-                            }
-                    )
+                    .frame(width: w * selectionWindowRatio, height: h)
+                    .allowsHitTesting(false)
             }
+            .frame(width: w, height: h)  // Force ZStack = screen size, prevents waveform from expanding it
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .updating($dragStartLowerBound) { _, state, _ in
+                        if state == nil { state = store.selectionRange.lowerBound }
+                    }
+                    .onChanged { value in
+                        guard let start = dragStartLowerBound else { return }
+                        // Drag right → selection moves left
+                        let delta = -value.translation.width / contentWidth
+                        store.send(.selectionWindowMoved(to: start + delta))
+                    }
+            )
         }
         .frame(height: 80)
     }
