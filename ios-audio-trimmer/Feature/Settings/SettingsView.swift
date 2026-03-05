@@ -21,6 +21,12 @@ struct SettingsView: View {
             }
             .scrollDismissesKeyboard(.immediately)
             .navigationTitle("Settings")
+            .navigationDestination(
+                item: $store.scope(state: \.trimmer, action: \.trimmer)
+            ) { trimmerStore in
+                TrimmerView(store: trimmerStore)
+                    .navigationTitle("Audio Trimmer")
+            }
         }
     }
 }

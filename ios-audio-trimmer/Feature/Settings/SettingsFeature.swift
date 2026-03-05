@@ -21,6 +21,16 @@ struct SettingsFeature {
             KeyTimePoint(id: UUID(), percentage: 0.65),
             KeyTimePoint(id: UUID(), percentage: 0.80),
         ]
+        @Presents var trimmer: TrimmerFeature.State?
+
+        var totalLength: TimeInterval {
+            let parts = totalLengthText.split(separator: ":")
+            guard parts.count == 2,
+                  let mm = Double(parts[0]),
+                  let ss = Double(parts[1])
+            else { return 0 }
+            return mm * 60 + ss
+        }
     }
 
     enum Action: BindableAction {
@@ -28,6 +38,7 @@ struct SettingsFeature {
         case addKeyTimePointTapped
         case deleteKeyTime(IndexSet)
         case editAudioTapped
+        case trimmer(PresentationAction<TrimmerFeature.Action>)
     }
 
     var body: some ReducerOf<Self> {
@@ -51,8 +62,19 @@ struct SettingsFeature {
                 return .none
 
             case .editAudioTapped:
+                state.trimmer = TrimmerFeature.State(
+                    totalLength: state.totalLength,
+                    keyTimes: state.keyTimes,
+                    selectionRange: 0.0...0.2
+                )
+                return .none
+
+            case .trimmer:
                 return .none
             }
+        }
+        .ifLet(\.$trimmer, action: \.trimmer) {
+            TrimmerFeature()
         }
     }
 }
