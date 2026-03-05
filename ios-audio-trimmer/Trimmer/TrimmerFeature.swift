@@ -8,13 +8,6 @@
 import ComposableArchitecture
 import Foundation
 
-// MARK: - Domain Models
-
-struct KeyTimePoint: Equatable, Identifiable, Sendable {
-    let id: UUID
-    var percentage: Double
-}
-
 @Reducer
 struct TrimmerFeature {
     
