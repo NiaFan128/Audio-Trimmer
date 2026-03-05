@@ -1,14 +1,14 @@
 //
-//  ios_audio_trimmerTests.swift
-//  ios-audio-trimmerTests
+//  AudioTrimmerTests.swift
+//  AudioTrimmerTests
 //
 //  Created by Nia Fan on 2026/2/28.
 //
 
 import Testing
-@testable import ios_audio_trimmer
+@testable import AudioTrimmer
 
-struct ios_audio_trimmerTests {
+struct AudioTrimmerTests {
 
     @Test func example() async throws {
         // Write your test here and use APIs like `#expect(...)` to check expected conditions.

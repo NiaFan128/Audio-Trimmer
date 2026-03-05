@@ -28,25 +28,25 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		940A6B042F53437D0036217A /* ios-audio-trimmer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-audio-trimmer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		940A6B112F53437E0036217A /* ios-audio-trimmerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios-audio-trimmerTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		940A6B1B2F53437E0036217A /* ios-audio-trimmerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios-audio-trimmerUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		940A6B042F53437D0036217A /* AudioTrimmerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AudioTrimmerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		940A6B112F53437E0036217A /* AudioTrimmerAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AudioTrimmerAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		940A6B1B2F53437E0036217A /* AudioTrimmerAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AudioTrimmerAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		940A6B062F53437D0036217A /* ios-audio-trimmer */ = {
+		940A6B062F53437D0036217A /* AudioTrimmer */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "ios-audio-trimmer";
+			path = AudioTrimmer;
 			sourceTree = "<group>";
 		};
-		940A6B142F53437E0036217A /* ios-audio-trimmerTests */ = {
+		940A6B142F53437E0036217A /* AudioTrimmerTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "ios-audio-trimmerTests";
+			path = AudioTrimmerTests;
 			sourceTree = "<group>";
 		};
-		940A6B1E2F53437E0036217A /* ios-audio-trimmerUITests */ = {
+		940A6B1E2F53437E0036217A /* AudioTrimmerUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "ios-audio-trimmerUITests";
+			path = AudioTrimmerUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -80,9 +80,9 @@
 		940A6AFB2F53437D0036217A = {
 			isa = PBXGroup;
 			children = (
-				940A6B062F53437D0036217A /* ios-audio-trimmer */,
-				940A6B142F53437E0036217A /* ios-audio-trimmerTests */,
-				940A6B1E2F53437E0036217A /* ios-audio-trimmerUITests */,
+				940A6B062F53437D0036217A /* AudioTrimmer */,
+				940A6B142F53437E0036217A /* AudioTrimmerTests */,
+				940A6B1E2F53437E0036217A /* AudioTrimmerUITests */,
 				94577B592F54318300687B58 /* Frameworks */,
 				940A6B052F53437D0036217A /* Products */,
 			);
@@ -91,9 +91,9 @@
 		940A6B052F53437D0036217A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				940A6B042F53437D0036217A /* ios-audio-trimmer.app */,
-				940A6B112F53437E0036217A /* ios-audio-trimmerTests.xctest */,
-				940A6B1B2F53437E0036217A /* ios-audio-trimmerUITests.xctest */,
+				940A6B042F53437D0036217A /* AudioTrimmerApp.app */,
+				940A6B112F53437E0036217A /* AudioTrimmerAppTests.xctest */,
+				940A6B1B2F53437E0036217A /* AudioTrimmerAppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -108,9 +108,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		940A6B032F53437D0036217A /* ios-audio-trimmer */ = {
+		940A6B032F53437D0036217A /* AudioTrimmerApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 940A6B252F53437E0036217A /* Build configuration list for PBXNativeTarget "ios-audio-trimmer" */;
+			buildConfigurationList = 940A6B252F53437E0036217A /* Build configuration list for PBXNativeTarget "AudioTrimmerApp" */;
 			buildPhases = (
 				940A6B002F53437D0036217A /* Sources */,
 				940A6B012F53437D0036217A /* Frameworks */,
@@ -121,19 +121,19 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				940A6B062F53437D0036217A /* ios-audio-trimmer */,
+				940A6B062F53437D0036217A /* AudioTrimmer */,
 			);
-			name = "ios-audio-trimmer";
+			name = AudioTrimmerApp;
 			packageProductDependencies = (
 				94577B5A2F54318300687B58 /* ComposableArchitecture */,
 			);
 			productName = "ios-audio-trimmer";
-			productReference = 940A6B042F53437D0036217A /* ios-audio-trimmer.app */;
+			productReference = 940A6B042F53437D0036217A /* AudioTrimmerApp.app */;
 			productType = "com.apple.product-type.application";
 		};
-		940A6B102F53437E0036217A /* ios-audio-trimmerTests */ = {
+		940A6B102F53437E0036217A /* AudioTrimmerAppTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 940A6B282F53437E0036217A /* Build configuration list for PBXNativeTarget "ios-audio-trimmerTests" */;
+			buildConfigurationList = 940A6B282F53437E0036217A /* Build configuration list for PBXNativeTarget "AudioTrimmerAppTests" */;
 			buildPhases = (
 				940A6B0D2F53437E0036217A /* Sources */,
 				940A6B0E2F53437E0036217A /* Frameworks */,
@@ -145,18 +145,18 @@
 				940A6B132F53437E0036217A /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				940A6B142F53437E0036217A /* ios-audio-trimmerTests */,
+				940A6B142F53437E0036217A /* AudioTrimmerTests */,
 			);
-			name = "ios-audio-trimmerTests";
+			name = AudioTrimmerAppTests;
 			packageProductDependencies = (
 			);
 			productName = "ios-audio-trimmerTests";
-			productReference = 940A6B112F53437E0036217A /* ios-audio-trimmerTests.xctest */;
+			productReference = 940A6B112F53437E0036217A /* AudioTrimmerAppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		940A6B1A2F53437E0036217A /* ios-audio-trimmerUITests */ = {
+		940A6B1A2F53437E0036217A /* AudioTrimmerAppUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 940A6B2B2F53437E0036217A /* Build configuration list for PBXNativeTarget "ios-audio-trimmerUITests" */;
+			buildConfigurationList = 940A6B2B2F53437E0036217A /* Build configuration list for PBXNativeTarget "AudioTrimmerAppUITests" */;
 			buildPhases = (
 				940A6B172F53437E0036217A /* Sources */,
 				940A6B182F53437E0036217A /* Frameworks */,
@@ -168,13 +168,13 @@
 				940A6B1D2F53437E0036217A /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				940A6B1E2F53437E0036217A /* ios-audio-trimmerUITests */,
+				940A6B1E2F53437E0036217A /* AudioTrimmerUITests */,
 			);
-			name = "ios-audio-trimmerUITests";
+			name = AudioTrimmerAppUITests;
 			packageProductDependencies = (
 			);
 			productName = "ios-audio-trimmerUITests";
-			productReference = 940A6B1B2F53437E0036217A /* ios-audio-trimmerUITests.xctest */;
+			productReference = 940A6B1B2F53437E0036217A /* AudioTrimmerAppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -200,7 +200,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 940A6AFF2F53437D0036217A /* Build configuration list for PBXProject "ios-audio-trimmer" */;
+			buildConfigurationList = 940A6AFF2F53437D0036217A /* Build configuration list for PBXProject "AudioTrimmerApp" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -217,9 +217,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				940A6B032F53437D0036217A /* ios-audio-trimmer */,
-				940A6B102F53437E0036217A /* ios-audio-trimmerTests */,
-				940A6B1A2F53437E0036217A /* ios-audio-trimmerUITests */,
+				940A6B032F53437D0036217A /* AudioTrimmerApp */,
+				940A6B102F53437E0036217A /* AudioTrimmerAppTests */,
+				940A6B1A2F53437E0036217A /* AudioTrimmerAppUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -275,12 +275,12 @@
 /* Begin PBXTargetDependency section */
 		940A6B132F53437E0036217A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 940A6B032F53437D0036217A /* ios-audio-trimmer */;
+			target = 940A6B032F53437D0036217A /* AudioTrimmerApp */;
 			targetProxy = 940A6B122F53437E0036217A /* PBXContainerItemProxy */;
 		};
 		940A6B1D2F53437E0036217A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 940A6B032F53437D0036217A /* ios-audio-trimmer */;
+			target = 940A6B032F53437D0036217A /* AudioTrimmerApp */;
 			targetProxy = 940A6B1C2F53437E0036217A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -417,6 +417,7 @@
 				DEVELOPMENT_TEAM = 7V8XWW9V4Y;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = AudioTrimmerApp;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -448,6 +449,7 @@
 				DEVELOPMENT_TEAM = 7V8XWW9V4Y;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = AudioTrimmerApp;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -487,7 +489,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ios-audio-trimmer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ios-audio-trimmer";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AudioTrimmerApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AudioTrimmerApp";
 			};
 			name = Debug;
 		};
@@ -509,7 +511,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ios-audio-trimmer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ios-audio-trimmer";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AudioTrimmerApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AudioTrimmerApp";
 			};
 			name = Release;
 		};
@@ -556,7 +558,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		940A6AFF2F53437D0036217A /* Build configuration list for PBXProject "ios-audio-trimmer" */ = {
+		940A6AFF2F53437D0036217A /* Build configuration list for PBXProject "AudioTrimmerApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				940A6B232F53437E0036217A /* Debug */,
@@ -565,7 +567,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		940A6B252F53437E0036217A /* Build configuration list for PBXNativeTarget "ios-audio-trimmer" */ = {
+		940A6B252F53437E0036217A /* Build configuration list for PBXNativeTarget "AudioTrimmerApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				940A6B262F53437E0036217A /* Debug */,
@@ -574,7 +576,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		940A6B282F53437E0036217A /* Build configuration list for PBXNativeTarget "ios-audio-trimmerTests" */ = {
+		940A6B282F53437E0036217A /* Build configuration list for PBXNativeTarget "AudioTrimmerAppTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				940A6B292F53437E0036217A /* Debug */,
@@ -583,7 +585,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		940A6B2B2F53437E0036217A /* Build configuration list for PBXNativeTarget "ios-audio-trimmerUITests" */ = {
+		940A6B2B2F53437E0036217A /* Build configuration list for PBXNativeTarget "AudioTrimmerAppUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				940A6B2C2F53437E0036217A /* Debug */,

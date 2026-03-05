@@ -1,5 +1,5 @@
 //
-//  ios_audio_trimmerApp.swift
+//  AudioTrimmerApp.swift
 //  ios-audio-trimmer
 //
 //  Created by Nia Fan on 2026/2/28.
@@ -9,7 +9,7 @@ import ComposableArchitecture
 import SwiftUI
 
 @main
-struct ios_audio_trimmerApp: App {
+struct AudioTrimmerApp: App {
     var body: some Scene {
         WindowGroup {
             SettingsView(

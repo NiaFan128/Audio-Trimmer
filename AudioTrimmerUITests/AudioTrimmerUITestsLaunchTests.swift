@@ -1,13 +1,13 @@
 //
-//  ios_audio_trimmerUITestsLaunchTests.swift
-//  ios-audio-trimmerUITests
+//  AudioTrimmerUITestsLaunchTests.swift
+//  AudioTrimmerUITests
 //
 //  Created by Nia Fan on 2026/2/28.
 //
 
 import XCTest
 
-final class ios_audio_trimmerUITestsLaunchTests: XCTestCase {
+final class AudioTrimmerUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true

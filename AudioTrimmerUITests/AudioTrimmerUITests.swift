@@ -1,13 +1,13 @@
 //
-//  ios_audio_trimmerUITests.swift
-//  ios-audio-trimmerUITests
+//  AudioTrimmerUITests.swift
+//  AudioTrimmerUITests
 //
 //  Created by Nia Fan on 2026/2/28.
 //
 
 import XCTest
 
-final class ios_audio_trimmerUITests: XCTestCase {
+final class AudioTrimmerUITests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
