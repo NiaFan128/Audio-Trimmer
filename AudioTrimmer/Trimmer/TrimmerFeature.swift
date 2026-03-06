@@ -19,12 +19,15 @@ struct TrimmerFeature {
         let initialSelectionRange: ClosedRange<Double>
         var currentTime: TimeInterval
         var isPlaying: Bool
+        /// Normalized amplitude samples (0.0–1.0). Empty = SF Symbol fallback.
+        var waveformSamples: [Float]
 
         init(
             totalLength: TimeInterval,
             keyTimes: IdentifiedArrayOf<KeyTimePoint>,
             selectionRange: ClosedRange<Double>,
-            isPlaying: Bool = false
+            isPlaying: Bool = false,
+            waveformSamples: [Float] = []
         ) {
             self.totalLength = totalLength
             self.keyTimes = keyTimes
@@ -32,6 +35,7 @@ struct TrimmerFeature {
             self.initialSelectionRange = selectionRange
             self.isPlaying = isPlaying
             self.currentTime = selectionRange.lowerBound * totalLength
+            self.waveformSamples = waveformSamples
         }
 
         static var mock: State {
@@ -52,6 +56,7 @@ struct TrimmerFeature {
     
     enum Action {
         case onAppear
+        case audioMetadataLoaded(AudioMetadata)
         case playButtonTapped
         case resetTapped
         case timerTick
@@ -68,6 +73,11 @@ struct TrimmerFeature {
         Reduce { state, action in
             switch action {
             case .onAppear:
+                return .none
+
+            case let .audioMetadataLoaded(metadata):
+                state.totalLength = metadata.duration
+                state.waveformSamples = metadata.waveformSamples
                 return .none
 
             case .playButtonTapped:

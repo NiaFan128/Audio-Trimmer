@@ -153,43 +153,11 @@ struct TrimmerTimelineView: View {
             ZStack {
                 Color.gray.opacity(0.2)
 
-                // Waveform — uses .position() so ZStack frame is not affected by contentWidth
-                Canvas { context, size in
-                    guard let dimSymbol = context.resolveSymbol(id: 0),
-                          let brightSymbol = context.resolveSymbol(id: 1) else { return }
-
-                    let step: CGFloat = 26
-
-                    // Pass 1: dim symbols across full waveform width
-                    var x: CGFloat = step / 2
-                    while x < size.width {
-                        context.draw(dimSymbol, at: CGPoint(x: x, y: size.height / 2))
-                        x += step
-                    }
-
-                    // Pass 2: bright, clipped to selection area
-                    let selLeft = CGFloat(store.selectionRange.lowerBound) * size.width
-                    let selWidth = CGFloat(store.selectionRange.upperBound - store.selectionRange.lowerBound) * size.width
-                    var innerContext = context
-                    innerContext.clip(to: Path(CGRect(x: selLeft, y: 0, width: selWidth, height: size.height)))
-                    x = step / 2
-                    while x < size.width {
-                        innerContext.draw(brightSymbol, at: CGPoint(x: x, y: size.height / 2))
-                        x += step
-                    }
-                } symbols: {
-                    // Outside selection: dim
-                    Image(systemName: "waveform")
-                        .font(.system(size: 30))
-                        .foregroundStyle(.white.opacity(0.25))
-                        .tag(0)
-                    // Inside selection: bright white
-                    Image(systemName: "waveform")
-                        .font(.system(size: 30))
-                        .foregroundStyle(.white)
-                        .tag(1)
-                }
-                .frame(width: contentWidth, height: h)
+                waveformCanvas(
+                    contentWidth: contentWidth, h: h,
+                    selectionRange: store.selectionRange,
+                    samples: store.waveformSamples
+                )
                 .position(x: waveformOffset + contentWidth / 2, y: h / 2)
 
                 // Selection window — ZStack centers this at (w/2, h/2) ✓
@@ -231,6 +199,75 @@ struct TrimmerTimelineView: View {
             )
         }
         .frame(height: 80)
+    }
+
+    // MARK: - Waveform rendering
+
+    @ViewBuilder
+    private func waveformCanvas(
+        contentWidth: CGFloat,
+        h: CGFloat,
+        selectionRange: ClosedRange<Double>,
+        samples: [Float]
+    ) -> some View {
+        if samples.isEmpty {
+            Canvas { context, size in
+                guard let dimSymbol = context.resolveSymbol(id: 0),
+                      let brightSymbol = context.resolveSymbol(id: 1) else { return }
+
+                let step: CGFloat = 26
+
+                var x: CGFloat = step / 2
+                while x < size.width {
+                    context.draw(dimSymbol, at: CGPoint(x: x, y: size.height / 2))
+                    x += step
+                }
+
+                let selLeft = CGFloat(selectionRange.lowerBound) * size.width
+                let selWidth = CGFloat(selectionRange.upperBound - selectionRange.lowerBound) * size.width
+                var innerContext = context
+                innerContext.clip(to: Path(CGRect(x: selLeft, y: 0, width: selWidth, height: size.height)))
+                x = step / 2
+                while x < size.width {
+                    innerContext.draw(brightSymbol, at: CGPoint(x: x, y: size.height / 2))
+                    x += step
+                }
+            } symbols: {
+                Image(systemName: "waveform")
+                    .font(.system(size: 30))
+                    .foregroundStyle(.white.opacity(0.25))
+                    .tag(0)
+                Image(systemName: "waveform")
+                    .font(.system(size: 30))
+                    .foregroundStyle(.white)
+                    .tag(1)
+            }
+            .frame(width: contentWidth, height: h)
+        } else {
+            Canvas { context, size in
+                let count = samples.count
+                guard count > 0 else { return }
+                let barWidth = size.width / CGFloat(count)
+
+                let selLeft = CGFloat(selectionRange.lowerBound) * size.width
+                let selRight = CGFloat(selectionRange.upperBound) * size.width
+                var innerContext = context
+                innerContext.clip(to: Path(CGRect(x: selLeft, y: 0,
+                                                  width: selRight - selLeft, height: size.height)))
+
+                for (i, sample) in samples.enumerated() {
+                    let x = CGFloat(i) * barWidth + barWidth / 2
+                    let barH = max(2, CGFloat(sample) * size.height)
+                    let rect = CGRect(x: x - barWidth * 0.35, y: (size.height - barH) / 2,
+                                      width: barWidth * 0.7, height: barH)
+                    context.fill(Path(roundedRect: rect, cornerRadius: 2),
+                                 with: .color(.white.opacity(0.25)))
+                    innerContext.fill(Path(roundedRect: rect, cornerRadius: 2),
+                                      with: .color(.white))
+                }
+            }
+            .frame(width: contentWidth, height: h)
+        }
     }
 }
 
