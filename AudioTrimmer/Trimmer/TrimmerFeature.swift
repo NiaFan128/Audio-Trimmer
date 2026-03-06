@@ -102,28 +102,28 @@ struct TrimmerFeature {
 
             case let .keyTimeTapped(percentage):
                 let rangeLength = state.initialSelectionRange.upperBound - state.initialSelectionRange.lowerBound
-                let newUpper = min(percentage + rangeLength, 1.0)
+                let newUpper = min(percentage + rangeLength, 1.0).rounded()
                 let shift = percentage - state.selectionRange.lowerBound
                 state.selectionRange = percentage...newUpper
-                state.currentTime += shift * state.totalLength
+                state.currentTime = (state.currentTime + shift * state.totalLength).rounded(places: 2)
                 return .none
 
             case let .playheadDragged(percentage):
-                state.currentTime = percentage * state.totalLength
+                state.currentTime = (percentage * state.totalLength).rounded(places: 2)
                 return .none
 
             case let .selectionWindowMoved(to: newLower):
                 let rangeWidth = state.selectionRange.upperBound - state.selectionRange.lowerBound
-                let clampedLower = min(1.0 - rangeWidth, max(0.0, newLower))
+                let clampedLower = min(1.0 - rangeWidth, max(0.0, newLower)).rounded()
                 let shift = clampedLower - state.selectionRange.lowerBound
-                state.selectionRange = clampedLower...(clampedLower + rangeWidth)
-                state.currentTime += shift * state.totalLength
+                state.selectionRange = clampedLower...(clampedLower + rangeWidth).rounded()
+                state.currentTime = (state.currentTime + shift * state.totalLength).rounded(places: 2)
                 return .none
 
             case .timerTick:
-                let startTime = state.selectionRange.lowerBound * state.totalLength
-                let endTime = state.selectionRange.upperBound * state.totalLength
-                state.currentTime += 0.1
+                let startTime = (state.selectionRange.lowerBound * state.totalLength).rounded(places: 2)
+                let endTime = (state.selectionRange.upperBound * state.totalLength).rounded(places: 2)
+                state.currentTime = (state.currentTime + 0.1).rounded(places: 2)
                 if state.currentTime >= endTime {
                     state.currentTime = startTime
                 }
