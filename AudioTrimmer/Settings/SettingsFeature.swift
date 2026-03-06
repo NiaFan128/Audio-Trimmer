@@ -37,6 +37,7 @@ struct SettingsFeature {
         case binding(BindingAction<State>)
         case addKeyTimePointTapped
         case deleteKeyTime(IndexSet)
+        case keyTimeUpdated(id: UUID, percentage: Double)
         case editAudioTapped
         case trimmer(PresentationAction<TrimmerFeature.Action>)
     }
@@ -59,6 +60,11 @@ struct SettingsFeature {
                 for index in indices.reversed() {
                     state.keyTimes.remove(at: index)
                 }
+                return .none
+
+            case let .keyTimeUpdated(id, percentage):
+                state.keyTimes[id: id]?.percentage = min(1.0, max(0.0, percentage))
+                state.keyTimes.sort { $0.percentage < $1.percentage }
                 return .none
 
             case .editAudioTapped:

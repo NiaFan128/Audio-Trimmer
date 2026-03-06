@@ -69,7 +69,9 @@ private extension SettingsView {
     var keyTimesSection: some View {
         Section("Key Times") {
             ForEach(store.keyTimes) { point in
-                KeyTimeRow(point: point, totalLengthText: store.totalLengthText)
+                KeyTimeRow(point: point, totalLengthText: store.totalLengthText) { newPct in
+                    store.send(.keyTimeUpdated(id: point.id, percentage: newPct))
+                }
             }
             .onDelete { store.send(.deleteKeyTime($0)) }
 
@@ -99,6 +101,7 @@ private extension SettingsView {
 private struct KeyTimeRow: View {
     let point: KeyTimePoint
     let totalLengthText: String
+    let onUpdate: (Double) -> Void
 
     private var timeString: String {
         let parts = totalLengthText.split(separator: ":")
@@ -112,16 +115,19 @@ private struct KeyTimeRow: View {
     }
 
     var body: some View {
-        HStack {
-            Circle()
-                .fill(Color.pink)
-                .frame(width: 8, height: 8)
-            Text(String(format: "%.0f%%", point.percentage * 100))
-                .monospacedDigit()
-            Spacer()
-            Text(timeString)
-                .monospacedDigit()
-                .foregroundStyle(.secondary)
+        Stepper(onIncrement: { onUpdate(point.percentage + 0.05) },
+                onDecrement: { onUpdate(point.percentage - 0.05) }) {
+            HStack {
+                Circle()
+                    .fill(Color.pink)
+                    .frame(width: 8, height: 8)
+                Text(String(format: "%d%%", Int((point.percentage * 100).rounded())))
+                    .monospacedDigit()
+                    .frame(width: 50, alignment: .leading)
+                Text(timeString)
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 }
