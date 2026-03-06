@@ -2,6 +2,10 @@
 
 An iOS app for managing audio key time points and previewing trim selections, built with SwiftUI and The Composable Architecture (TCA).
 
+Settings | Trimmer
+-- | --
+<img src="https://github.com/user-attachments/assets/03f67415-0ea2-4727-86e0-b79dbc76f613" height=500> | <img src="https://github.com/user-attachments/assets/86c2d3fd-ddf4-4f82-a8ad-93abe1418344" height=500>
+
 ## Requirements
 
 - Xcode 16+
