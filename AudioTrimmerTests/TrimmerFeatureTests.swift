@@ -85,3 +85,94 @@ struct KeyTimeTappedTests {
         }
     }
 }
+
+@Suite("Playback Controls")
+struct PlaybackControlTests {
+
+    @Test("play sets isPlaying to true")
+    func play() async {
+        let store = await TestStore(initialState: TrimmerFeature.State(
+            totalLength: 150,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )) { TrimmerFeature() } withDependencies: {
+            $0.continuousClock = ImmediateClock()
+        }
+        await store.send(.playButtonTapped) {
+            $0.isPlaying = true
+        }
+        await store.send(.playButtonTapped) {
+            $0.isPlaying = false
+        }
+    }
+
+    @Test("pause sets isPlaying to false")
+    func pause() async {
+        var initial = TrimmerFeature.State(
+            totalLength: 150,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )
+        initial.isPlaying = true
+        let store = await TestStore(initialState: initial) {
+            TrimmerFeature()
+        } withDependencies: {
+            $0.continuousClock = ImmediateClock()
+        }
+        await store.send(.playButtonTapped) {
+            $0.isPlaying = false
+        }
+    }
+
+    @Test("reset restores selectionRange and currentTime, stops playback")
+    func reset() async {
+        let store = await TestStore(initialState: TrimmerFeature.State(
+            totalLength: 150,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )) { TrimmerFeature() } withDependencies: {
+            $0.continuousClock = ImmediateClock()
+        }
+        await store.send(.playButtonTapped) {
+            $0.isPlaying = true
+        }
+        await store.send(.resetTapped) {
+            $0.isPlaying = false
+            $0.selectionRange = 0.0...0.2
+            $0.currentTime = 0.0
+        }
+    }
+}
+
+@Suite("timerTick")
+struct TimerTickTests {
+
+    @Test("advances currentTime by 0.1")
+    func advances() async {
+        var initial = TrimmerFeature.State(
+            totalLength: 150,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )
+        initial.currentTime = 10.0
+        let store = await TestStore(initialState: initial) { TrimmerFeature() }
+        await store.send(.timerTick) {
+            $0.currentTime = 10.1
+        }
+    }
+
+    @Test("wraps back to startTime when reaching endTime")
+    func wraps() async {
+        // selectionRange 0.0...0.2, totalLength 150 → endTime = 30.0
+        var initial = TrimmerFeature.State(
+            totalLength: 150,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )
+        initial.currentTime = 29.9
+        let store = await TestStore(initialState: initial) { TrimmerFeature() }
+        await store.send(.timerTick) {
+            $0.currentTime = 0.0  // wraps to startTime
+        }
+    }
+}
