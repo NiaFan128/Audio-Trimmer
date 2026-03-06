@@ -176,3 +176,115 @@ struct TimerTickTests {
         }
     }
 }
+
+@Suite("playheadDragged")
+struct PlayheadDraggedTests {
+
+    @Test("sets currentTime to percentage * totalLength", arguments: [
+        (0.0, 0.0),
+        (0.5, 75.0),
+        (1.0, 150.0),
+    ])
+    func setsCurrentTime(percentage: Double, expected: TimeInterval) async {
+        var initial = TrimmerFeature.State(
+            totalLength: 150,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )
+        initial.currentTime = 30.0
+        let store = await TestStore(initialState: initial) { TrimmerFeature() }
+        await store.send(.playheadDragged(percentage)) {
+            $0.currentTime = expected
+        }
+    }
+
+    @Test("clamps currentTime within totalLength bounds", arguments: [
+        (-0.5, 0.0),
+        (1.5, 150.0),
+    ])
+    func clampsOutOfBounds(percentage: Double, expected: TimeInterval) async {
+        var initial = TrimmerFeature.State(
+            totalLength: 150,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )
+        initial.currentTime = 30.0
+        let store = await TestStore(initialState: initial) { TrimmerFeature() }
+        await store.send(.playheadDragged(percentage)) {
+            $0.currentTime = expected
+        }
+    }
+}
+
+@Suite("selectionWindowMoved")
+struct SelectionWindowMovedTests {
+
+    @Test("moves selection and syncs currentTime")
+    func moves() async {
+        let store = await TestStore(initialState: TrimmerFeature.State(
+            totalLength: 150,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )) { TrimmerFeature() }
+        await store.send(.selectionWindowMoved(to: 0.3)) {
+            $0.selectionRange = 0.3...0.5
+            $0.currentTime = 45.0
+        }
+    }
+
+    @Test("clamps to left boundary when newLower < 0")
+    func clampsLeft() async {
+        let store = await TestStore(initialState: TrimmerFeature.State(
+            totalLength: 150,
+            keyTimes: [],
+            selectionRange: 0.3...0.5
+        )) { TrimmerFeature() }
+        await store.send(.selectionWindowMoved(to: -0.1)) {
+            $0.selectionRange = 0.0...0.2
+            $0.currentTime = 0.0
+        }
+    }
+
+    @Test("clamps to right boundary when newLower + rangeWidth > 1")
+    func clampsRight() async {
+        let store = await TestStore(initialState: TrimmerFeature.State(
+            totalLength: 150,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )) { TrimmerFeature() }
+        await store.send(.selectionWindowMoved(to: 0.9)) {
+            $0.selectionRange = 0.8...1.0
+            $0.currentTime = 120.0
+        }
+    }
+}
+
+// Placeholder: full integration tests to be added when AudioClient.liveValue is implemented
+@Suite("audioMetadataLoaded")
+struct AudioMetadataLoadedTests {
+
+    @Test("updates totalLength and waveformSamples from metadata")
+    func updatesMetadata() async {
+        let store = await TestStore(initialState: TrimmerFeature.State(
+            totalLength: 150,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )) { TrimmerFeature() }
+        await store.send(.audioMetadataLoaded(AudioMetadata(duration: 240, waveformSamples: [0.5, 0.8, 0.3]))) {
+            $0.totalLength = 240
+            $0.waveformSamples = [0.5, 0.8, 0.3]
+        }
+    }
+
+    @Test("zero duration is accepted without crash")
+    func zeroDuration() async {
+        let store = await TestStore(initialState: TrimmerFeature.State(
+            totalLength: 150,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )) { TrimmerFeature() }
+        await store.send(.audioMetadataLoaded(AudioMetadata(duration: 0, waveformSamples: []))) {
+            $0.totalLength = 0
+        }
+    }
+}

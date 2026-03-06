@@ -109,7 +109,8 @@ struct TrimmerFeature {
                 return .none
 
             case let .playheadDragged(percentage):
-                state.currentTime = (percentage * state.totalLength).rounded(places: 2)
+                let clamped = min(1.0, max(0.0, percentage))
+                state.currentTime = (clamped * state.totalLength).rounded(places: 2)
                 return .none
 
             case let .selectionWindowMoved(to: newLower):
