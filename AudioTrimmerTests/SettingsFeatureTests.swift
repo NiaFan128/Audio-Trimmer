@@ -178,8 +178,8 @@ struct KeyTimesTests {
 @Suite("editAudioTapped")
 struct EditAudioTests {
 
-    @Test("passes totalLength and keyTimes to TrimmerFeature")
-    func passesState() async {
+    @Test("selectionRange centers on first keyTime")
+    func selectionRangeCenteredOnFirstKeyTime() async {
         let keyTimes: IdentifiedArrayOf<KeyTimePoint> = [
             KeyTimePoint(id: UUID(0), percentage: 0.25),
             KeyTimePoint(id: UUID(1), percentage: 0.50),
@@ -192,6 +192,21 @@ struct EditAudioTests {
             $0.trimmer = TrimmerFeature.State(
                 totalLength: 150.0,
                 keyTimes: keyTimes,
+                selectionRange: 0.15...0.35
+            )
+        }
+    }
+
+    @Test("selectionRange defaults to 0.0...0.2 when no keyTimes")
+    func selectionRangeDefaultWhenEmpty() async {
+        var initial = SettingsFeature.State()
+        initial.totalLengthText = "02:30"
+        initial.keyTimes = []
+        let store = await TestStore(initialState: initial) { SettingsFeature() }
+        await store.send(.editAudioTapped) {
+            $0.trimmer = TrimmerFeature.State(
+                totalLength: 150.0,
+                keyTimes: [],
                 selectionRange: 0.0...0.2
             )
         }

@@ -14,6 +14,8 @@ struct SettingsFeature {
     @ObservableState
     struct State: Equatable {
         var totalLengthText: String = "02:30"
+        // Sample data for demo — UUIDs here are not injected by design,
+        // as struct defaults cannot access TCA dependencies.
         var keyTimes: IdentifiedArrayOf<KeyTimePoint> = [
             KeyTimePoint(id: UUID(), percentage: 0.10),
             KeyTimePoint(id: UUID(), percentage: 0.25),
@@ -70,10 +72,14 @@ struct SettingsFeature {
                 return .none
 
             case .editAudioTapped:
+                let rangeWidth = 0.2
+                let center = state.keyTimes.first?.percentage ?? (rangeWidth / 2)
+                let lower = max(0.0, center - rangeWidth / 2)
+                let upper = min(1.0, lower + rangeWidth)
                 state.trimmer = TrimmerFeature.State(
                     totalLength: state.totalLength,
                     keyTimes: state.keyTimes,
-                    selectionRange: 0.0...0.2
+                    selectionRange: lower...upper
                 )
                 return .none
 
