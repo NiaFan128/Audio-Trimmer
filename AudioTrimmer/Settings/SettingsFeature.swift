@@ -83,4 +83,15 @@ struct SettingsFeature {
             TrimmerFeature()
         }
     }
+
+    static func formatMMSS(_ input: String) -> String {
+        let digits = String(input.filter(\.isNumber).prefix(4))
+        guard digits.count >= 3 else { return digits }
+        let mm = String(digits.prefix(2))
+        let ssDigits = String(digits.dropFirst(2))
+        if digits.count == 4, let ss = Int(ssDigits), ss > 59 {
+            return "\(mm):59"
+        }
+        return "\(mm):\(ssDigits)"
+    }
 }

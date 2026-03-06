@@ -42,7 +42,7 @@ private extension SettingsView {
                 .monospacedDigit()
                 .focused($isLengthFocused)
                 .onChange(of: store.totalLengthText) { _, newValue in
-                    let formatted = Self.formatMMSS(newValue)
+                    let formatted = SettingsFeature.formatMMSS(newValue)
                     if formatted != newValue {
                         store.totalLengthText = formatted
                     }
@@ -56,14 +56,6 @@ private extension SettingsView {
         } header: {
             Text("Track Length")
         }
-    }
-
-    static func formatMMSS(_ input: String) -> String {
-        let digits = String(input.filter(\.isNumber).prefix(4))
-        guard digits.count >= 3 else { return digits }
-        let mm = String(digits.prefix(2))
-        let ss = String(digits.dropFirst(2))
-        return "\(mm):\(ss)"
     }
 
     var keyTimesSection: some View {
