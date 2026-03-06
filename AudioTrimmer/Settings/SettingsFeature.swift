@@ -42,6 +42,8 @@ struct SettingsFeature {
         case trimmer(PresentationAction<TrimmerFeature.Action>)
     }
 
+    @Dependency(\.uuid) var uuid
+
     var body: some ReducerOf<Self> {
         BindingReducer()
         Reduce { state, action in
@@ -53,7 +55,7 @@ struct SettingsFeature {
                 let lastPct = state.keyTimes.map(\.percentage).max() ?? 0.0
                 guard lastPct < 1.0 else { return .none }
                 let newPct = min(lastPct + 0.10, 1.0)
-                state.keyTimes.append(KeyTimePoint(id: UUID(), percentage: newPct))
+                state.keyTimes.append(KeyTimePoint(id: uuid(), percentage: newPct))
                 return .none
 
             case let .deleteKeyTime(indices):
