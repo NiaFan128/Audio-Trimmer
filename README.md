@@ -1,4 +1,5 @@
 # Audio Trimmer
+<img src="AudioTrimmer/Assets.xcassets/AppIcon.appiconset/Audio Trimmer AppIcon_dark.png" width=120>
 
 An iOS app for managing audio key time points and previewing trim selections, built with SwiftUI and The Composable Architecture (TCA).
 
