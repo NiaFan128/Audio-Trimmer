@@ -144,6 +144,118 @@ struct PlaybackControlTests {
     }
 }
 
+@Suite("Playback Effects")
+struct PlaybackEffectTests {
+
+    @Test("play triggers timerTick every 0.1s")
+    func playTriggersTimerTick() async {
+        let clock = TestClock()
+        let store = await TestStore(initialState: TrimmerFeature.State(
+            totalLength: 150,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )) { TrimmerFeature() } withDependencies: {
+            $0.continuousClock = clock
+        }
+        await store.send(.playButtonTapped) {
+            $0.isPlaying = true
+        }
+        await clock.advance(by: .seconds(0.1))
+        await store.receive(\.timerTick) {
+            $0.currentTime = 0.1
+        }
+        await clock.advance(by: .seconds(0.1))
+        await store.receive(\.timerTick) {
+            $0.currentTime = 0.2
+        }
+        await store.send(.playButtonTapped) {
+            $0.isPlaying = false
+        }
+    }
+
+    @Test("pause cancels timer effect")
+    func pauseCancelsTimer() async {
+        let clock = TestClock()
+        let store = await TestStore(initialState: TrimmerFeature.State(
+            totalLength: 150,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )) { TrimmerFeature() } withDependencies: {
+            $0.continuousClock = clock
+        }
+        await store.send(.playButtonTapped) {
+            $0.isPlaying = true
+        }
+        await clock.advance(by: .seconds(0.1))
+        await store.receive(\.timerTick) {
+            $0.currentTime = 0.1
+        }
+        await store.send(.playButtonTapped) {
+            $0.isPlaying = false
+        }
+        // advance after pause — no more timerTick should be received
+        await clock.advance(by: .seconds(0.5))
+    }
+
+    @Test("reset cancels timer effect")
+    func resetCancelsTimer() async {
+        let clock = TestClock()
+        let store = await TestStore(initialState: TrimmerFeature.State(
+            totalLength: 150,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )) { TrimmerFeature() } withDependencies: {
+            $0.continuousClock = clock
+        }
+        await store.send(.playButtonTapped) {
+            $0.isPlaying = true
+        }
+        await clock.advance(by: .seconds(0.1))
+        await store.receive(\.timerTick) {
+            $0.currentTime = 0.1
+        }
+        await store.send(.resetTapped) {
+            $0.isPlaying = false
+            $0.selectionRange = 0.0...0.2
+            $0.currentTime = 0.0
+        }
+        // advance after reset — no more timerTick
+        await clock.advance(by: .seconds(0.5))
+    }
+
+    @Test("timer wraps at selection end boundary")
+    func timerWrapsAtEnd() async {
+        let clock = TestClock()
+        // selectionRange 0.0...0.2, totalLength 100 → endTime = 20.0
+        var initial = TrimmerFeature.State(
+            totalLength: 100,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )
+        initial.currentTime = 19.9
+        initial.isPlaying = true
+        let store = await TestStore(initialState: initial) {
+            TrimmerFeature()
+        } withDependencies: {
+            $0.continuousClock = clock
+        }
+        // 19.9 + 0.1 = 20.0 >= endTime → wraps to 0.0
+        await store.send(.playButtonTapped) {
+            $0.isPlaying = false
+        }
+        await store.send(.playButtonTapped) {
+            $0.isPlaying = true
+        }
+        await clock.advance(by: .seconds(0.1))
+        await store.receive(\.timerTick) {
+            $0.currentTime = 0.0
+        }
+        await store.send(.playButtonTapped) {
+            $0.isPlaying = false
+        }
+    }
+}
+
 @Suite("timerTick")
 struct TimerTickTests {
 
