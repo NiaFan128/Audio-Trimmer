@@ -60,18 +60,25 @@ AudioTrimmerApp
 Tests are written with **Swift Testing** (`@Suite`, `@Test`, `#expect`) and TCA `TestStore` for exhaustive state assertions.
 
 **SettingsFeature**
-- Time field validation and `mm:ss` formatter, including seconds clamping (> 59 → 59)
+- `formatMMSS` / `timeString` format helpers
 - Key time add, delete, and update logic with auto-sort by percentage
 - `editAudioTapped` selection range centered on first key time, with fallback default
+- Unhappy paths: zero total length, duplicate percentages
 
 **TrimmerFeature**
-- Play / pause / reset synchronization — timer tests use `ImmediateClock()` to run synchronously
-- Key time tap and playhead drag interactions with `currentTime` sync
-- Selection window movement with boundary clamping
+- Playback state: play / pause / reset synchronization
+- Playback effects: `TestClock` verifies timer lifecycle — tick emission, pause cancellation, reset cancellation, wrap at boundary
+- Key time tap, playhead drag, and selection window movement with boundary clamping
+- Unhappy paths: zero total length across timerTick, playhead drag, and selection move
+
+**Integration: Settings → Trimmer**
+- Operate in trimmer then dismiss — parent state unchanged
+- Play in trimmer then dismiss — timer effect cancelled by `.ifLet`
 
 **Decisions**
 - Floating-point precision: `Double.rounded(places:)` applied in the reducer keeps state deterministic for exact equality assertions
 - Deterministic UUIDs: `@Dependency(\.uuid)` with `.incrementing` produces predictable IDs in tests
+- View logic extracted to testable static functions (`timeString`, `formatMMSS`)
 
 ## Future Integration
 
