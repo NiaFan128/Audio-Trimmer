@@ -371,6 +371,44 @@ struct SelectionWindowMovedTests {
     }
 }
 
+@Suite("Unhappy Paths")
+struct TrimmerUnhappyPathTests {
+
+    @Test("timerTick with totalLength 0 wraps immediately without crash")
+    func timerTickZeroLength() async {
+        let store = await TestStore(initialState: TrimmerFeature.State(
+            totalLength: 0,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )) { TrimmerFeature() }
+        // startTime = 0, endTime = 0, currentTime 0 + 0.1 = 0.1 >= 0 → wraps back to 0
+        // net state change: none (0 → 0), confirming no crash
+        await store.send(.timerTick)
+    }
+
+    @Test("playheadDragged with totalLength 0 stays at 0")
+    func playheadZeroLength() async {
+        let store = await TestStore(initialState: TrimmerFeature.State(
+            totalLength: 0,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )) { TrimmerFeature() }
+        await store.send(.playheadDragged(0.5))
+    }
+
+    @Test("selectionWindowMoved with totalLength 0 does not crash")
+    func selectionMoveZeroLength() async {
+        let store = await TestStore(initialState: TrimmerFeature.State(
+            totalLength: 0,
+            keyTimes: [],
+            selectionRange: 0.0...0.2
+        )) { TrimmerFeature() }
+        await store.send(.selectionWindowMoved(to: 0.5)) {
+            $0.selectionRange = 0.5...0.7
+        }
+    }
+}
+
 // Placeholder: full integration tests to be added when AudioClient.liveValue is implemented
 @Suite("audioMetadataLoaded")
 struct AudioMetadataLoadedTests {

@@ -175,6 +175,41 @@ struct KeyTimesTests {
     }
 }
 
+@Suite("Unhappy Paths")
+struct UnhappyPathTests {
+
+    @Test("duplicate percentages — update one to different value still sorts correctly")
+    func duplicatePercentageSort() async {
+        let id0 = UUID(0)
+        let id1 = UUID(1)
+        var initial = SettingsFeature.State()
+        initial.keyTimes = [
+            KeyTimePoint(id: id0, percentage: 0.50),
+            KeyTimePoint(id: id1, percentage: 0.50),
+        ]
+        let store = await TestStore(initialState: initial) { SettingsFeature() }
+        await store.send(.keyTimeUpdated(id: id1, percentage: 0.30)) {
+            $0.keyTimes[id: id1]?.percentage = 0.30
+            $0.keyTimes.sort { $0.percentage < $1.percentage }
+        }
+    }
+
+    @Test("editAudioTapped with totalLength 0 does not crash")
+    func zeroTotalLength() async {
+        var initial = SettingsFeature.State()
+        initial.totalLengthText = "00:00"
+        initial.keyTimes = []
+        let store = await TestStore(initialState: initial) { SettingsFeature() }
+        await store.send(.editAudioTapped) {
+            $0.trimmer = TrimmerFeature.State(
+                totalLength: 0,
+                keyTimes: [],
+                selectionRange: 0.0...0.2
+            )
+        }
+    }
+}
+
 @Suite("editAudioTapped")
 struct EditAudioTests {
 
