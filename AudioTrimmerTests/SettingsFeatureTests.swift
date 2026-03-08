@@ -247,3 +247,86 @@ struct EditAudioTests {
         }
     }
 }
+
+@Suite("Integration: Settings → Trimmer", .serialized)
+struct SettingsTrimmerIntegrationTests {
+
+    @Test("operate in trimmer then dismiss — parent state restored")
+    func operateAndDismiss() async {
+        let clock = TestClock()
+        let keyTimes: IdentifiedArrayOf<KeyTimePoint> = [
+            KeyTimePoint(id: UUID(0), percentage: 0.25),
+        ]
+        var initial = SettingsFeature.State()
+        initial.totalLengthText = "01:00"
+        initial.keyTimes = keyTimes
+        let store = await TestStore(initialState: initial) {
+            SettingsFeature()
+        } withDependencies: {
+            $0.continuousClock = clock
+        }
+
+        // enter trimmer — keyTimes should match
+        await store.send(.editAudioTapped) {
+            $0.trimmer = TrimmerFeature.State(
+                totalLength: 60.0,
+                keyTimes: keyTimes,
+                selectionRange: 0.15...0.35
+            )
+        }
+        #expect(store.state.trimmer?.keyTimes == keyTimes)
+
+        // operate inside trimmer — tap a key time
+        await store.send(\.trimmer.presented.keyTimeTapped, 0.5) {
+            $0.trimmer?.selectionRange = 0.5...0.7
+            $0.trimmer?.currentTime = 30.0
+        }
+
+        // dismiss trimmer
+        await store.send(\.trimmer.dismiss) {
+            $0.trimmer = nil
+        }
+
+        // parent state unchanged
+        #expect(store.state.keyTimes == keyTimes)
+        #expect(store.state.totalLengthText == "01:00")
+    }
+
+    @Test("play in trimmer then dismiss — timer effect cancelled")
+    func playAndDismiss() async {
+        let clock = TestClock()
+        var initial = SettingsFeature.State()
+        initial.totalLengthText = "01:00"
+        initial.keyTimes = []
+        let store = await TestStore(initialState: initial) {
+            SettingsFeature()
+        } withDependencies: {
+            $0.continuousClock = clock
+        }
+
+        await store.send(.editAudioTapped) {
+            $0.trimmer = TrimmerFeature.State(
+                totalLength: 60.0,
+                keyTimes: [],
+                selectionRange: 0.0...0.2
+            )
+        }
+
+        // start playback
+        await store.send(\.trimmer.presented.playButtonTapped) {
+            $0.trimmer?.isPlaying = true
+        }
+        await clock.advance(by: .seconds(0.1))
+        await store.receive(\.trimmer.presented.timerTick) {
+            $0.trimmer?.currentTime = 0.1
+        }
+
+        // dismiss while playing — timer should be cancelled
+        await store.send(\.trimmer.dismiss) {
+            $0.trimmer = nil
+        }
+
+        // advance after dismiss — no timerTick received
+        await clock.advance(by: .seconds(0.5))
+    }
+}
