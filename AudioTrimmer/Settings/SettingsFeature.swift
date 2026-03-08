@@ -102,4 +102,10 @@ struct SettingsFeature {
         }
         return "\(mm):\(ssDigits)"
     }
+
+    static func timeString(percentage: Double, totalLength: TimeInterval) -> String {
+        guard totalLength > 0 else { return "--:--" }
+        let t = percentage * totalLength
+        return String(format: "%02d:%02d", Int(t) / 60, Int(t) % 60)
+    }
 }

@@ -70,6 +70,25 @@ struct TotalLengthTests {
     }
 }
 
+@Suite("timeString")
+struct TimeStringTests {
+
+    @Test("percentage × totalLength → mm:ss", arguments: [
+        (0.25, 150.0, "00:37"),
+        (0.50, 60.0, "00:30"),
+        (0.0, 150.0, "00:00"),
+        (1.0, 150.0, "02:30"),
+    ])
+    func validOutput(percentage: Double, totalLength: TimeInterval, expected: String) {
+        #expect(SettingsFeature.timeString(percentage: percentage, totalLength: totalLength) == expected)
+    }
+
+    @Test("totalLength 0 → --:--")
+    func zeroTotalLength() {
+        #expect(SettingsFeature.timeString(percentage: 0.5, totalLength: 0) == "--:--")
+    }
+}
+
 @Suite("Key Times")
 struct KeyTimesTests {
 

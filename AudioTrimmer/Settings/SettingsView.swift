@@ -61,7 +61,7 @@ private extension SettingsView {
     var keyTimesSection: some View {
         Section("Key Times") {
             ForEach(store.keyTimes) { point in
-                KeyTimeRow(point: point, totalLengthText: store.totalLengthText) { newPct in
+                KeyTimeRow(point: point, totalLength: store.totalLength) { newPct in
                     store.send(.keyTimeUpdated(id: point.id, percentage: newPct))
                 }
             }
@@ -92,19 +92,8 @@ private extension SettingsView {
 
 private struct KeyTimeRow: View {
     let point: KeyTimePoint
-    let totalLengthText: String
+    let totalLength: TimeInterval
     let onUpdate: (Double) -> Void
-
-    private var timeString: String {
-        let parts = totalLengthText.split(separator: ":")
-        guard parts.count == 2,
-              let mm = Double(parts[0]),
-              let ss = Double(parts[1])
-        else { return "--:--" }
-        let total = mm * 60 + ss
-        let t = point.percentage * total
-        return String(format: "%02d:%02d", Int(t) / 60, Int(t) % 60)
-    }
 
     var body: some View {
         Stepper(onIncrement: { onUpdate(point.percentage + 0.05) },
@@ -116,7 +105,7 @@ private struct KeyTimeRow: View {
                 Text(String(format: "%d%%", Int((point.percentage * 100).rounded())))
                     .monospacedDigit()
                     .frame(width: 50, alignment: .leading)
-                Text(timeString)
+                Text(SettingsFeature.timeString(percentage: point.percentage, totalLength: totalLength))
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
             }
