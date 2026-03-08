@@ -11,7 +11,7 @@ import SwiftUI
 // MARK: - TrimmerView
 
 struct TrimmerView: View {
-    @Bindable var store: StoreOf<TrimmerFeature>
+    let store: StoreOf<TrimmerFeature>
 
     var body: some View {
         VStack(spacing: 12) {
