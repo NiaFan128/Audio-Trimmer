@@ -5,7 +5,7 @@ An iOS app for managing audio key time points and previewing trim selections, bu
 
 Settings | Trimmer
 -- | --
-<img src="https://github.com/user-attachments/assets/03f67415-0ea2-4727-86e0-b79dbc76f613" height=500> | <img src="https://github.com/user-attachments/assets/86c2d3fd-ddf4-4f82-a8ad-93abe1418344" height=500>
+<img src="https://github.com/user-attachments/assets/03f67415-0ea2-4727-86e0-b79dbc76f613" height=500> | <img src="https://github.com/user-attachments/assets/dc3f2c02-a94c-4663-bd4d-1f940bd49830" height=500>
 
 ## Requirements
 
@@ -45,12 +45,12 @@ AudioTrimmerApp
 
 ### Trimmer Screen
 
-- Key Time Selection view: tappable markers that jump the selection window to the tapped position
-- Timeline view: draggable selection window over a simulated waveform
+- Key Time Selection view: tappable markers that jump the selection window with easeInOut animation
+- Timeline view: draggable selection window over a simulated waveform with smooth transitions
   - Empty `waveformSamples` → SF Symbol tiling fallback
   - Populated `waveformSamples` → real amplitude bar rendering
 - Draggable playhead to scrub within the full timeline
-- Play/Pause toggle with a 0.1-second simulated timer tick
+- Play/Pause toggle with spring animation and a 0.1-second simulated timer tick
 - Reset restores the selection window and playhead to their initial positions
 - Displays start time, end time, and current playback time
 
@@ -64,7 +64,7 @@ Tests are written with **Swift Testing** (`@Suite`, `@Test`, `#expect`) and TCA 
 - `formatMMSS` / `timeString` format helpers
 - Key time add, delete, and update logic with auto-sort by percentage
 - `editAudioTapped` selection range centered on first key time, with fallback default
-- Unhappy paths: zero total length, duplicate percentages
+- Unhappy paths: zero total length, duplicate percentages, delete out-of-bounds index
 
 **TrimmerFeature**
 - Playback state: play / pause / reset synchronization
@@ -85,5 +85,4 @@ Tests are written with **Swift Testing** (`@Suite`, `@Test`, `#expect`) and TCA 
 
 - **Real audio** — implement `AudioClient.liveValue` with AVFoundation to load duration and waveform samples
 - **Waveform rendering** — `TrimmerFeature` already accepts `waveformSamples: [Float]`; the view branches on empty vs. populated
-- **Animations** — spring animations for trim handle drag and key time tap transitions
 - **Persistence** — key time points and track length via `UserDefaults`
