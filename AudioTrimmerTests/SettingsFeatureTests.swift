@@ -213,6 +213,22 @@ struct UnhappyPathTests {
         }
     }
 
+    @Test("delete out-of-bounds index does not crash")
+    func deleteOutOfBounds() async {
+        var initial = SettingsFeature.State()
+        initial.keyTimes = [KeyTimePoint(id: UUID(0), percentage: 0.10)]
+        let store = await TestStore(initialState: initial) { SettingsFeature() }
+        await store.send(.deleteKeyTime(IndexSet(integer: 5)))
+    }
+
+    @Test("delete from empty keyTimes does not crash")
+    func deleteFromEmpty() async {
+        var initial = SettingsFeature.State()
+        initial.keyTimes = []
+        let store = await TestStore(initialState: initial) { SettingsFeature() }
+        await store.send(.deleteKeyTime(IndexSet(integer: 0)))
+    }
+
     @Test("editAudioTapped with totalLength 0 does not crash")
     func zeroTotalLength() async {
         var initial = SettingsFeature.State()

@@ -61,7 +61,7 @@ struct SettingsFeature {
                 return .none
 
             case let .deleteKeyTime(indices):
-                for index in indices.reversed() {
+                for index in indices.sorted().reversed() where index < state.keyTimes.count {
                     state.keyTimes.remove(at: index)
                 }
                 return .none
