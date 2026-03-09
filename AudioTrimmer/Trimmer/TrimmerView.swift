@@ -57,6 +57,7 @@ struct KeyTimeSelectionView: View {
                 .background(Color.gray.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 .padding(.horizontal)
+                .animation(.easeInOut(duration: 0.25), value: store.selectionRange.lowerBound)
         }
     }
 
@@ -159,6 +160,7 @@ struct TrimmerTimelineView: View {
                     samples: store.waveformSamples
                 )
                 .position(x: waveformOffset + contentWidth / 2, y: h / 2)
+                .animation(.easeInOut(duration: 0.25), value: store.selectionRange.lowerBound)
 
                 // Selection window — ZStack centers this at (w/2, h/2) ✓
                 let progressFraction = CGFloat(min(1.0, max(0, (currentPct - store.selectionRange.lowerBound) / Double(rangeWidth))))
@@ -182,6 +184,7 @@ struct TrimmerTimelineView: View {
                     }
                     .frame(width: w * selectionWindowRatio, height: h)
                     .allowsHitTesting(false)
+                    .animation(.easeInOut(duration: 0.25), value: progressFraction)
             }
             .frame(width: w, height: h)  // Force ZStack = screen size, prevents waveform from expanding it
             .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -285,9 +288,10 @@ struct PlaybackControlBar: View {
                     Text(store.isPlaying ? "Pause" : "Play")
                         .frame(width: 88)
                         .padding(.vertical, 10)
-                        .background(Color.blue)
+                        .background(store.isPlaying ? Color.green : Color.blue)
                         .foregroundStyle(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: store.isPlaying)
                 }
 
                 Button {
